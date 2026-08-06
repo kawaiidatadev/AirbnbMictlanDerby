@@ -1,0 +1,1671 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5" />
+    <title id="pageTitle">🏇 Mictlán Derby 2026 · Hospedaje Compartido</title>
+
+    <!-- Favicon (se carga desde CONFIG) -->
+    <link id="faviconLink" rel="icon" href="" />
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- Bootstrap 5 (solo para la grilla y utilidades) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+    <style>
+        /* ============================================
+           VARIABLES Y BASE
+        ============================================ */
+        :root {
+            --primary: #7b2cbf;
+            --secondary: #9d4edd;
+            --accent: #ffb703;
+            --bg: #faf8ff;
+            --text-dark: #1a1a1a;
+            --text-muted: #6b6b6b;
+            --card-radius: 18px;
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding-top: 60px; /* espacio para nav fija */
+        }
+
+        /* ============================================
+           CURSOR PERSONALIZADO (solo escritorio)
+        ============================================ */
+        @media (hover: hover) and (min-width: 1024px) {
+            body {
+                cursor: none;
+            }
+
+            #custom-cursor {
+                position: fixed;
+                pointer-events: none;
+                z-index: 99999;
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                border: 2px solid var(--accent);
+                background: rgba(123, 44, 191, 0.2);
+                backdrop-filter: blur(4px);
+                transform: translate(-50%, -50%);
+                transition: width 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+                            height 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+                            background 0.25s ease,
+                            border-color 0.25s ease,
+                            box-shadow 0.25s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
+                color: var(--accent);
+                box-shadow: 0 0 20px rgba(123, 44, 191, 0.15);
+                will-change: transform;
+            }
+
+            #custom-cursor .cursor-icon {
+                transition: transform 0.3s ease;
+            }
+
+            #custom-cursor.hover {
+                width: 52px;
+                height: 52px;
+                background: rgba(123, 44, 191, 0.35);
+                border-color: var(--primary);
+                box-shadow: 0 0 40px rgba(123, 44, 191, 0.25);
+            }
+
+            #custom-cursor.hover .cursor-icon {
+                transform: scale(1.2) rotate(-10deg);
+            }
+
+            #custom-cursor.hidden {
+                opacity: 0;
+                transition: opacity 0.2s;
+            }
+        }
+
+        /* ============================================
+           NAVEGACIÓN FIJA
+        ============================================ */
+        .navbar-fixed {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1040;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            padding: 0.6rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            overflow-x: auto;
+            white-space: nowrap;
+            gap: 0.8rem;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .navbar-fixed .nav-link-custom {
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 0.85rem;
+            text-decoration: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 30px;
+            transition: background 0.2s, color 0.2s;
+            flex-shrink: 0;
+        }
+
+        .navbar-fixed .nav-link-custom:hover,
+        .navbar-fixed .nav-link-custom:focus {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .navbar-fixed .nav-link-custom i {
+            margin-right: 0.3rem;
+        }
+
+        /* ============================================
+           HERO CON PARALLAX Y ANIMACIÓN
+        ============================================ */
+        .hero {
+            position: relative;
+            min-height: 88vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #fff;
+            padding: 2rem 1rem;
+            overflow: hidden;
+            background: var(--primary);
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background: url('assets/1.avif') center/cover no-repeat;
+            transform: scale(1.1);
+            transition: transform 0.1s linear;
+            will-change: transform;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.25) 100%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 720px;
+            padding: 2rem;
+            border-radius: var(--card-radius);
+            background: rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(4px);
+            animation: fadeInUp 0.9s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero h1 {
+            font-weight: 800;
+            font-size: clamp(2.4rem, 7vw, 4.6rem);
+            letter-spacing: -0.02em;
+            margin-bottom: 0.25rem;
+        }
+
+        .hero .subtitle {
+            font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+            font-weight: 400;
+            opacity: 0.95;
+            margin-bottom: 0.75rem;
+        }
+
+        .hero .badge-date {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(4px);
+            padding: 0.4rem 1.2rem;
+            border-radius: 50px;
+            display: inline-block;
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .hero .precio-hero {
+            font-size: clamp(2rem, 4.5vw, 3.2rem);
+            font-weight: 800;
+            background: var(--accent);
+            color: #1a1a1a;
+            padding: 0.2rem 1.8rem;
+            border-radius: 50px;
+            display: inline-block;
+            margin: 0.5rem 0 1.2rem;
+        }
+
+        .hero .btn-whatsapp-hero {
+            background: #25D366;
+            color: #fff;
+            border: none;
+            padding: 0.9rem 2.8rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.2rem;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.25s;
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.35);
+            width: 100%;
+            max-width: 320px;
+        }
+
+        .hero .btn-whatsapp-hero:hover {
+            transform: scale(1.04);
+            background: #1da851;
+            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.45);
+        }
+
+        /* Chips de navegación rápida */
+        .hero-chips {
+            position: relative;
+            z-index: 1;
+            margin-top: 1.8rem;
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 0.6rem;
+            overflow-x: auto;
+            padding: 0.5rem 0.5rem 0.8rem;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .hero-chips::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hero-chips .chip {
+            flex-shrink: 0;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(4px);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: background 0.2s, transform 0.2s;
+            white-space: nowrap;
+        }
+
+        .hero-chips .chip:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.02);
+        }
+
+        .hero-chips .chip i {
+            margin-right: 0.4rem;
+        }
+
+        /* ============================================
+           CARDS MODERNAS
+        ============================================ */
+        .card-modern {
+            background: #ffffff;
+            border: none;
+            border-radius: var(--card-radius);
+            box-shadow: var(--shadow);
+            padding: 2rem 2rem 2.2rem;
+            height: 100%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .card-modern.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .card-modern:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.10);
+        }
+
+        .card-modern h3 {
+            font-weight: 700;
+            font-size: 1.7rem;
+            color: var(--primary);
+            margin-bottom: 1.2rem;
+            letter-spacing: -0.01em;
+        }
+
+        .card-modern h3 i {
+            color: var(--accent);
+            margin-right: 0.5rem;
+        }
+
+        .section-spacer {
+            margin-bottom: 2.5rem;
+        }
+
+        /* ============================================
+           GALERÍA HERO + MINIATURAS (Masonry)
+        ============================================ */
+        .galeria-hero .featured-wrapper {
+            position: relative;
+            border-radius: var(--card-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            background: #ddd;
+            aspect-ratio: 16 / 9;
+            cursor: pointer;
+        }
+
+        .galeria-hero .featured-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s ease;
+        }
+
+        .galeria-hero .featured-wrapper:hover img {
+            transform: scale(1.03);
+        }
+
+        .galeria-hero .featured-badge {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            padding: 0.3rem 1rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            backdrop-filter: blur(4px);
+            pointer-events: none;
+        }
+
+        .galeria-miniaturas {
+            columns: 4;
+            column-gap: 0.8rem;
+            margin-top: 0.8rem;
+        }
+
+        .galeria-miniaturas .thumb-item {
+            break-inside: avoid;
+            margin-bottom: 0.8rem;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .galeria-miniaturas .thumb-item img {
+            width: 100%;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .galeria-miniaturas .thumb-item:hover {
+            transform: scale(1.04);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+            z-index: 2;
+        }
+
+        .galeria-miniaturas .thumb-item.active {
+            outline: 3px solid var(--primary);
+            outline-offset: -2px;
+        }
+
+        .galeria-miniaturas .thumb-item .thumb-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(123, 44, 191, 0.15);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .galeria-miniaturas .thumb-item:hover .thumb-overlay {
+            opacity: 1;
+        }
+
+        .btn-ver-todas {
+            display: inline-block;
+            margin-top: 1rem;
+            background: var(--primary);
+            color: #fff;
+            padding: 0.5rem 1.8rem;
+            border-radius: 50px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: background 0.2s, transform 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-ver-todas:hover {
+            background: var(--secondary);
+            transform: scale(1.02);
+        }
+
+        /* ============================================
+           LIGHTBOX MEJORADO (con zoom y swipe)
+        ============================================ */
+        .lightbox {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.92);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+            cursor: pointer;
+            touch-action: none;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox .lightbox-content {
+            position: relative;
+            max-width: 92vw;
+            max-height: 88vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            touch-action: none;
+        }
+
+        .lightbox .lightbox-content img {
+            max-width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            cursor: zoom-in;
+            transition: transform 0.3s ease;
+        }
+
+        .lightbox .lightbox-content img.zoom {
+            transform: scale(1.8);
+            cursor: zoom-out;
+        }
+
+        .lightbox .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.8rem;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+            z-index: 10;
+        }
+
+        .lightbox .lightbox-nav:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .lightbox .lightbox-nav.prev {
+            left: 0.5rem;
+        }
+        .lightbox .lightbox-nav.next {
+            right: 0.5rem;
+        }
+
+        .lightbox .lightbox-counter {
+            position: absolute;
+            bottom: -2.8rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 0.2rem 1.2rem;
+            border-radius: 30px;
+            backdrop-filter: blur(4px);
+        }
+
+        .lightbox .close-lightbox {
+            position: absolute;
+            top: 0.5rem;
+            right: 1.5rem;
+            font-size: 2.8rem;
+            color: #fff;
+            cursor: pointer;
+            transition: transform 0.2s;
+            z-index: 10;
+        }
+
+        .lightbox .close-lightbox:hover {
+            transform: rotate(90deg);
+        }
+
+        /* ============================================
+           CERCANÍAS COMO BADGES
+        ============================================ */
+        .cercanias-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .cercanias-badges .badge-cercania {
+            background: var(--bg);
+            color: var(--text-dark);
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            border: 1px solid #e0d5c5;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .cercanias-badges .badge-cercania i {
+            color: var(--accent);
+        }
+
+        /* ============================================
+           DISTRIBUCIÓN
+        ============================================ */
+        .distribucion-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.2rem;
+            margin: 1.2rem 0 0.8rem;
+        }
+
+        .distribucion-item {
+            background: var(--bg);
+            padding: 1.2rem 1rem;
+            border-radius: 14px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .distribucion-item .cama-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            display: block;
+            margin-bottom: 0.4rem;
+        }
+
+        .capacidad-max {
+            background: var(--accent);
+            color: #1a1a1a;
+            font-weight: 700;
+            padding: 0.4rem 1.4rem;
+            border-radius: 50px;
+            display: inline-block;
+            margin-top: 0.8rem;
+        }
+
+        /* ============================================
+           AMENIDADES
+        ============================================ */
+        .amenidades-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        @media (min-width: 576px) {
+            .amenidades-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .amenidad-item {
+            background: var(--bg);
+            padding: 0.9rem 0.5rem;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 0.95rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+            transition: background 0.2s;
+        }
+
+        .amenidad-item:hover {
+            background: #f0ebf8;
+        }
+
+        .amenidad-item i {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+
+        /* ============================================
+           RATINGS
+        ============================================ */
+        .rating-big {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.8rem 2.5rem;
+            justify-content: center;
+            margin: 1rem 0 1.2rem;
+        }
+
+        .rating-item {
+            text-align: center;
+        }
+
+        .rating-item .number {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .rating-item .label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            display: block;
+            margin-top: -0.2rem;
+        }
+
+        /* ============================================
+           COSTOS (solo precio por persona)
+        ============================================ */
+        .costo-persona {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--primary);
+            background: var(--bg);
+            padding: 0.2rem 2rem;
+            border-radius: 50px;
+            display: inline-block;
+        }
+
+        .costo-persona small {
+            font-size: 1.2rem;
+            font-weight: 400;
+        }
+
+        /* ============================================
+           MAPA Y DISTANCIAS
+        ============================================ */
+        .mapa-container {
+            border-radius: var(--card-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            margin-top: 0.8rem;
+        }
+
+        .mapa-container iframe {
+            width: 100%;
+            height: 320px;
+            border: 0;
+            display: block;
+        }
+
+        .coordenadas-box {
+            background: var(--bg);
+            padding: 0.6rem 1.2rem;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+
+        .btn-maps {
+            display: inline-block;
+            background: var(--primary);
+            color: #fff;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: 0.2s;
+            border: none;
+            margin-top: 0.8rem;
+        }
+
+        .btn-maps:hover {
+            background: var(--secondary);
+            color: #fff;
+            transform: scale(1.02);
+        }
+
+        .distancias-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem 1.5rem;
+            margin-top: 0.8rem;
+        }
+
+        .distancia-item {
+            background: var(--bg);
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .distancia-item i {
+            color: var(--primary);
+            font-size: 1rem;
+        }
+
+        /* ============================================
+           BOTONES FLOTANTES (WhatsApp + Volver arriba)
+        ============================================ */
+        .btn-flotante {
+            position: fixed;
+            bottom: 2rem;
+            z-index: 1030;
+            border: none;
+            border-radius: 60px;
+            padding: 0.9rem 1.6rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            transition: transform 0.2s, opacity 0.3s, visibility 0.3s;
+            font-size: 1rem;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .btn-flotante:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-whatsapp-flotante {
+            right: 2rem;
+            background: #25D366;
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.35);
+        }
+
+        .btn-whatsapp-flotante:hover {
+            background: #1da851;
+        }
+
+        .btn-top-flotante {
+            right: 2rem;
+            bottom: 6rem;
+            background: var(--primary);
+            box-shadow: 0 6px 20px rgba(123, 44, 191, 0.35);
+            padding: 0.8rem 1.2rem;
+            border-radius: 60px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s, transform 0.2s;
+        }
+
+        .btn-top-flotante.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .btn-top-flotante:hover {
+            background: var(--secondary);
+        }
+
+        /* ============================================
+           RESPONSIVE AJUSTES
+        ============================================ */
+        @media (max-width: 992px) {
+            .galeria-miniaturas {
+                columns: 3;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding-top: 54px;
+            }
+            .navbar-fixed {
+                padding: 0.4rem 0.6rem;
+                gap: 0.4rem;
+            }
+            .navbar-fixed .nav-link-custom {
+                font-size: 0.75rem;
+                padding: 0.2rem 0.6rem;
+            }
+            .hero {
+                min-height: 75vh;
+                padding: 1.5rem 1rem;
+            }
+            .hero-content {
+                padding: 1.2rem;
+                background: rgba(0, 0, 0, 0.35);
+            }
+            .hero .btn-whatsapp-hero {
+                font-size: 1rem;
+                padding: 0.8rem 1.5rem;
+                max-width: 100%;
+            }
+            .hero-chips {
+                gap: 0.4rem;
+                padding: 0.3rem 0.3rem 0.6rem;
+            }
+            .hero-chips .chip {
+                font-size: 0.7rem;
+                padding: 0.3rem 0.8rem;
+            }
+            .card-modern {
+                padding: 1.2rem;
+            }
+            .card-modern h3 {
+                font-size: 1.4rem;
+            }
+            .rating-big {
+                gap: 1rem;
+            }
+            .rating-item .number {
+                font-size: 1.6rem;
+            }
+            .costo-persona {
+                font-size: 2.2rem;
+                padding: 0.1rem 1.2rem;
+            }
+            .costo-persona small {
+                font-size: 1rem;
+            }
+            .btn-whatsapp-flotante {
+                bottom: 1rem;
+                right: 1rem;
+                padding: 0.7rem 1.2rem;
+                font-size: 0.9rem;
+            }
+            .btn-top-flotante {
+                right: 1rem;
+                bottom: 5rem;
+                padding: 0.7rem 1rem;
+            }
+            .galeria-miniaturas {
+                columns: 3;
+            }
+            .galeria-hero .featured-wrapper {
+                aspect-ratio: 4 / 3;
+            }
+            .distancias-grid {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .mapa-container iframe {
+                height: 220px;
+            }
+            .btn-ver-todas {
+                font-size: 0.9rem;
+                padding: 0.4rem 1.2rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .galeria-miniaturas {
+                columns: 2;
+            }
+            .distribucion-grid {
+                grid-template-columns: 1fr;
+            }
+            .cercanias-badges .badge-cercania {
+                font-size: 0.75rem;
+                padding: 0.3rem 0.8rem;
+            }
+            .hero .precio-hero {
+                font-size: 1.8rem;
+                padding: 0.1rem 1.2rem;
+            }
+            .btn-flotante {
+                padding: 0.6rem 1rem;
+                font-size: 0.8rem;
+                gap: 0.4rem;
+            }
+            .lightbox .lightbox-nav {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+            .lightbox .lightbox-content img {
+                max-height: 70vh;
+            }
+            .lightbox .close-lightbox {
+                font-size: 2rem;
+                top: 0.2rem;
+                right: 0.8rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            .hero .subtitle {
+                font-size: 0.9rem;
+            }
+            .hero .badge-date {
+                font-size: 0.75rem;
+                padding: 0.3rem 0.8rem;
+            }
+            .costo-persona {
+                font-size: 1.8rem;
+            }
+            .navbar-fixed .nav-link-custom {
+                font-size: 0.65rem;
+                padding: 0.2rem 0.5rem;
+            }
+        }
+
+        /* ============================================
+           UTILITY: espaciado entre secciones
+        ============================================ */
+        .seccion-titulo {
+            margin-bottom: 1.8rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================
+    CURSOR PERSONALIZADO (solo escritorio)
+    ============================================ -->
+    <div id="custom-cursor" aria-hidden="true">
+        <span class="cursor-icon">🏇</span>
+    </div>
+
+    <!-- ============================================
+    NAVEGACIÓN FIJA
+    ============================================ -->
+    <nav class="navbar-fixed" id="navbarTop">
+        <a href="#galeria" class="nav-link-custom"><i class="fas fa-images"></i> Fotos</a>
+        <a href="#hospedaje" class="nav-link-custom"><i class="fas fa-building"></i> Hospedaje</a>
+        <a href="#distribucion" class="nav-link-custom"><i class="fas fa-bed"></i> Distribución</a>
+        <a href="#amenidades" class="nav-link-custom"><i class="fas fa-wifi"></i> Amenidades</a>
+        <a href="#precio" class="nav-link-custom"><i class="fas fa-tag"></i> Precio</a>
+        <a href="#ubicacion" class="nav-link-custom"><i class="fas fa-map-pin"></i> Ubicación</a>
+        <a href="#reservar" class="nav-link-custom" style="background: var(--accent); color: #1a1a1a;"><i class="fab fa-whatsapp"></i> Reservar</a>
+    </nav>
+
+    <!-- ============================================
+    LIGHTBOX
+    ============================================ -->
+    <div class="lightbox" id="lightbox" onclick="cerrarLightbox(event)">
+        <span class="close-lightbox" onclick="cerrarLightbox(event)">&times;</span>
+        <button class="lightbox-nav prev" id="lbPrev" onclick="event.stopPropagation(); navegarLightbox(-1)">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="lightbox-nav next" id="lbNext" onclick="event.stopPropagation(); navegarLightbox(1)">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+        <div class="lightbox-content" onclick="event.stopPropagation();" id="lightboxContent">
+            <img id="lightboxImg" src="" alt="Foto ampliada" onclick="toggleZoom(event)" />
+            <div class="lightbox-counter" id="lightboxCounter">1 / 13</div>
+        </div>
+    </div>
+
+    <!-- ============================================
+    HERO CON FOTO DE FONDO + PARALLAX + ANIMACIÓN
+    ============================================ -->
+    <section class="hero" id="heroSection">
+        <div class="hero-bg" id="heroBg"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>🏇 Mictlán Derby 2026</h1>
+            <p class="subtitle">Hospedaje compartido para asistentes del evento</p>
+            <div class="badge-date">
+                <i class="fas fa-calendar-alt me-2"></i> 3 al 4 de octubre
+                <span class="mx-2">·</span>
+                <i class="fas fa-map-pin me-2"></i> Lomas de Sotelo, CDMX
+            </div>
+            <div class="precio-hero">$350 MXN <span style="font-size: 0.6em; font-weight: 400;">por persona</span></div>
+            <a class="btn-whatsapp-hero whatsapp-link" target="_blank">
+                <i class="fab fa-whatsapp me-2"></i> Reservar por WhatsApp
+            </a>
+        </div>
+
+        <!-- Chips de navegación rápida -->
+        <div class="hero-chips">
+            <a href="#galeria" class="chip"><i class="fas fa-images"></i> Fotos</a>
+            <a href="#hospedaje" class="chip"><i class="fas fa-building"></i> Hospedaje</a>
+            <a href="#distribucion" class="chip"><i class="fas fa-bed"></i> Distribución</a>
+            <a href="#amenidades" class="chip"><i class="fas fa-wifi"></i> Amenidades</a>
+            <a href="#precio" class="chip"><i class="fas fa-tag"></i> Precio</a>
+            <a href="#ubicacion" class="chip"><i class="fas fa-map-pin"></i> Ubicación</a>
+            <a href="#reservar" class="chip" style="background: var(--accent); color: #1a1a1a;"><i class="fab fa-whatsapp"></i> Reservar</a>
+        </div>
+    </section>
+
+    <!-- ============================================
+    CONTENIDO PRINCIPAL
+    ============================================ -->
+    <div class="container my-5">
+
+        <!-- ===== GALERÍA HERO + MINIATURAS ===== -->
+        <section class="row g-4 mb-5" id="galeria">
+            <div class="col-12">
+                <div class="card-modern" id="galeriaCard">
+                    <h3><i class="fas fa-images"></i> Galería del Airbnb</h3>
+                    <div class="galeria-hero">
+                        <div class="featured-wrapper" id="featuredWrapper">
+                            <img id="featuredImage" src="assets/1.avif" alt="Foto destacada" loading="lazy" />
+                            <span class="featured-badge"><i class="fas fa-camera me-1"></i> <span id="fotosCount">13</span> fotos</span>
+                        </div>
+                    </div>
+                    <div class="galeria-miniaturas" id="galeriaMiniaturas">
+                        <!-- Generadas por JS -->
+                    </div>
+                    <div style="text-align: center; margin-top: 1rem;">
+                        <button class="btn-ver-todas" id="btnVerTodas"><i class="fas fa-th"></i> Ver todas las fotos</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== TARJETA 1: ALOJAMIENTO ===== -->
+        <section class="row g-4 mb-5" id="hospedaje">
+            <div class="col-12">
+                <div class="card-modern fade-up">
+                    <h3><i class="fas fa-building"></i> Departamento Sotelo</h3>
+                    <p style="font-size: 1.05rem; max-width: 720px;">
+                        Ubicado en una zona tranquila y segura de la Ciudad de México,
+                        muy cerca de los principales centros de interés.
+                    </p>
+                    <div class="cercanias-badges">
+                        <span class="badge-cercania"><i class="fas fa-check-circle"></i> Polanco</span>
+                        <span class="badge-cercania"><i class="fas fa-check-circle"></i> Antara</span>
+                        <span class="badge-cercania"><i class="fas fa-check-circle"></i> Plaza Carso</span>
+                        <span class="badge-cercania"><i class="fas fa-check-circle"></i> Plaza Toreo</span>
+                        <span class="badge-cercania"><i class="fas fa-check-circle"></i> Centro Citibanamex</span>
+                        <span class="badge-cercania"><i class="fas fa-check-circle"></i> Campo Militar</span>
+                        <span class="badge-cercania"><i class="fas fa-check-circle"></i> Comité Olímpico</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== TARJETA 2: DISTRIBUCIÓN ===== -->
+        <section class="row g-4 mb-5" id="distribucion">
+            <div class="col-12">
+                <div class="card-modern fade-up">
+                    <h3><i class="fas fa-bed"></i> Distribución</h3>
+                    <div class="distribucion-grid">
+                        <div class="distribucion-item">
+                            <span class="cama-icon"><i class="fas fa-bed"></i></span>
+                            Recámara 1
+                            <span style="display: block; font-weight: 400; font-size: 0.9rem; color: var(--text-muted);">
+                                1 cama matrimonial
+                            </span>
+                        </div>
+                        <div class="distribucion-item">
+                            <span class="cama-icon"><i class="fas fa-bed"></i><i class="fas fa-bed" style="margin-left: 0.2rem;"></i></span>
+                            Recámara 2
+                            <span style="display: block; font-weight: 400; font-size: 0.9rem; color: var(--text-muted);">
+                                2 camas individuales
+                            </span>
+                        </div>
+                        <div class="distribucion-item">
+                            <span class="cama-icon"><i class="fas fa-bed"></i></span>
+                            Recámara 3
+                            <span style="display: block; font-weight: 400; font-size: 0.9rem; color: var(--text-muted);">
+                                1 cama matrimonial
+                            </span>
+                        </div>
+                    </div>
+                    <div class="text-center mt-3">
+                        <span class="capacidad-max">
+                            <i class="fas fa-users me-2"></i> Capacidad máxima: 6 huéspedes
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== TARJETA 3: AMENIDADES ===== -->
+        <section class="row g-4 mb-5" id="amenidades">
+            <div class="col-12">
+                <div class="card-modern fade-up">
+                    <h3><i class="fas fa-wifi"></i> Amenidades</h3>
+                    <div class="amenidades-grid">
+                        <div class="amenidad-item"><i class="fas fa-wifi"></i> Wifi</div>
+                        <div class="amenidad-item"><i class="fas fa-utensils"></i> Cocina</div>
+                        <div class="amenidad-item"><i class="fas fa-tv"></i> TV</div>
+                        <div class="amenidad-item"><i class="fas fa-car"></i> Estacionamiento</div>
+                        <div class="amenidad-item"><i class="fas fa-snowflake"></i> Refrigerador</div>
+                        <div class="amenidad-item"><i class="fas fa-microphone-alt"></i> Microondas</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== TARJETA 4: INFORMACIÓN IMPORTANTE ===== -->
+        <section class="row g-4 mb-5" id="informacion">
+            <div class="col-12">
+                <div class="card-modern fade-up">
+                    <h3><i class="fas fa-star"></i> Información importante</h3>
+                    <div class="rating-big">
+                        <div class="rating-item">
+                            <span class="number">4.25</span>
+                            <span class="label">Calificación general</span>
+                        </div>
+                        <div class="rating-item">
+                            <span class="number">4.8</span>
+                            <span class="label">Ubicación</span>
+                        </div>
+                        <div class="rating-item">
+                            <span class="number">4.4</span>
+                            <span class="label">Relación calidad-precio</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== TARJETA 5: COSTOS ===== -->
+        <section class="row g-4 mb-5" id="precio">
+            <div class="col-12">
+                <div class="card-modern fade-up text-center">
+                    <h3><i class="fas fa-tag"></i> Precio</h3>
+                    <div style="margin: 0.8rem 0;">
+                        <span class="costo-persona">
+                            $<span id="precioNumerico">350</span> MXN <small>por persona</small>
+                        </span>
+                    </div>
+                    <a class="btn-whatsapp-hero whatsapp-link" target="_blank" style="background: #25D366; font-size: 1.1rem; padding: 0.8rem 2.5rem; box-shadow: 0 6px 20px rgba(37,211,102,0.35); text-decoration: none; color: #fff; border-radius: 50px; display: inline-block; max-width: 320px; width: 100%;">
+                        <i class="fab fa-whatsapp me-2"></i> Apartar mi lugar
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== TARJETA 6: UBICACIÓN Y DISTANCIAS ===== -->
+        <section class="row g-4 mb-5" id="ubicacion">
+            <div class="col-12">
+                <div class="card-modern fade-up">
+                    <h3><i class="fas fa-map-pin"></i> Ubicación</h3>
+                    <p>
+                        <strong id="direccionUbicacion">Lomas de Sotelo</strong> · <span id="alcaldiaUbicacion">Miguel Hidalgo, CDMX</span>
+                    </p>
+                    <div id="coordenadasBox" class="coordenadas-box">
+                        <!-- Generado por JS -->
+                    </div>
+                    <a id="abrirMaps" class="btn-maps" target="_blank">
+                        <i class="fas fa-external-link-alt me-1"></i> Abrir en Google Maps
+                    </a>
+
+                    <div class="distancias-grid" id="distanciasContainer">
+                        <!-- Generado por JS -->
+                    </div>
+
+                    <div class="mapa-container mt-3">
+                        <iframe id="mapaFrame" allowfullscreen loading="lazy"></iframe>
+                    </div>
+                    <p class="text-muted small mt-2">
+                        <i class="fas fa-info-circle me-1"></i> La ubicación exacta se comparte una vez confirmada la reservación.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SECCIÓN FINAL CTA ===== -->
+        <section class="row g-4 mb-5" id="reservar">
+            <div class="col-12">
+                <div class="card-modern fade-up text-center" style="background: linear-gradient(135deg, #f0ebf8, #ffffff); border: 2px solid var(--primary);">
+                    <h3 style="color: var(--primary);"><i class="fas fa-check-circle"></i> ¿Listo para reservar?</h3>
+                    <p style="font-size: 1.1rem; max-width: 500px; margin: 0 auto 1.2rem;">
+                        Aparta tu lugar ahora. Solo <strong>$<span id="precioFinal">350</span> MXN</strong> por persona.
+                    </p>
+                    <a class="btn-whatsapp-hero whatsapp-link" target="_blank" style="background: #25D366; font-size: 1.2rem; padding: 0.9rem 3rem; box-shadow: 0 6px 20px rgba(37,211,102,0.35); text-decoration: none; color: #fff; border-radius: 50px; display: inline-block; max-width: 320px; width: 100%;">
+                        <i class="fab fa-whatsapp me-2"></i> Reservar ahora
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </div><!-- /container -->
+
+    <!-- ===== BOTONES FLOTANTES ===== -->
+    <a class="btn-flotante btn-whatsapp-flotante whatsapp-link" target="_blank">
+        <i class="fab fa-whatsapp fa-lg"></i> Reservar
+    </a>
+
+    <button class="btn-flotante btn-top-flotante" id="btnTop" aria-label="Volver arriba">
+        <i class="fas fa-chevron-up fa-lg"></i>
+    </button>
+
+    <!-- ============================================
+    SCRIPTS
+    ============================================ -->
+    <script>
+        // ============================================
+        // CONFIGURACIÓN GLOBAL
+        // ============================================
+        const CONFIG = {
+            favicon: 'assets/favicon.ico',
+            titulo: '🏇 Mictlán Derby 2026 · Hospedaje Compartido',
+            precioPorPersona: 350,
+            whatsappNumber: '3324393525',
+            direccion: 'Lomas de Sotelo',
+            alcaldia: 'Miguel Hidalgo, CDMX',
+            ubicacion: {
+                lat: 19.448181,
+                lng: -99.216226,
+                plusCode: 'CQXM+7GC'
+            },
+            galeria: {
+                totalFotos: 13,
+                carpeta: 'assets',
+                extension: 'avif'
+            },
+            mensajeWhatsApp: 'Hola! Quiero apartar mi lugar en el Airbnb para el Mictlán Derby 2026.',
+            // Activar/desactivar cursor personalizado
+            cursorPersonalizado: true
+        };
+
+        // ============================================
+        // APLICAR CONFIGURACIÓN INICIAL
+        // ============================================
+        document.getElementById('faviconLink').href = CONFIG.favicon;
+        document.getElementById('pageTitle').textContent = CONFIG.titulo;
+        document.getElementById('precioNumerico').textContent = CONFIG.precioPorPersona;
+        document.getElementById('precioFinal').textContent = CONFIG.precioPorPersona;
+        document.getElementById('fotosCount').textContent = CONFIG.galeria.totalFotos;
+
+        // ============================================
+        // CURSOR PERSONALIZADO (solo desktop y si está activado)
+        // ============================================
+        function initCustomCursor() {
+            if (!CONFIG.cursorPersonalizado) return;
+
+            // Detectar si es dispositivo táctil o pantalla pequeña
+            const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+            const isMobile = window.innerWidth < 1024;
+
+            if (isTouchDevice || isMobile) {
+                // Desactivar cursor personalizado en móviles
+                document.getElementById('custom-cursor').style.display = 'none';
+                document.body.style.cursor = 'auto';
+                return;
+            }
+
+            const cursor = document.getElementById('custom-cursor');
+            const icon = cursor.querySelector('.cursor-icon');
+
+            // Ocultar cursor nativo
+            document.body.style.cursor = 'none';
+
+            // Seguir el mouse
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+            });
+
+            // Ocultar cuando sale de la ventana
+            document.addEventListener('mouseleave', () => {
+                cursor.classList.add('hidden');
+            });
+            document.addEventListener('mouseenter', () => {
+                cursor.classList.remove('hidden');
+            });
+
+            // Elementos interactivos que activan el estado "hover"
+            const interactiveSelectors = [
+                'a',
+                'button',
+                '.foto-item',
+                '.thumb-item',
+                '.card-modern',
+                '.btn-ver-todas',
+                '.chip',
+                '.nav-link-custom',
+                '.btn-maps',
+                '.btn-flotante',
+                '.btn-whatsapp-hero'
+            ];
+
+            const interactiveElements = document.querySelectorAll(interactiveSelectors.join(','));
+
+            interactiveElements.forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    cursor.classList.add('hover');
+                });
+                el.addEventListener('mouseleave', () => {
+                    cursor.classList.remove('hover');
+                });
+            });
+
+            // También añadir a elementos que se agregan dinámicamente (como miniaturas)
+            const observer = new MutationObserver(() => {
+                document.querySelectorAll(interactiveSelectors.join(',')).forEach(el => {
+                    if (!el._cursorListener) {
+                        el._cursorListener = true;
+                        el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+                        el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+                    }
+                });
+            });
+            observer.observe(document.body, { childList: true, subtree: true });
+        }
+
+        // ============================================
+        // UTILIDADES
+        // ============================================
+        function haversine(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) ** 2 +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon / 2) ** 2;
+            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        }
+
+        function formatearDistancia(km) {
+            if (km < 1) return Math.round(km * 1000) + ' m';
+            return km.toFixed(1) + ' km';
+        }
+
+        // ============================================
+        // WHATSAPP
+        // ============================================
+        function configurarWhatsApp() {
+            const url =
+                `https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(CONFIG.mensajeWhatsApp)}`;
+            document.querySelectorAll('.whatsapp-link').forEach(link => {
+                link.href = url;
+            });
+        }
+
+        // ============================================
+        // MAPA Y GOOGLE MAPS
+        // ============================================
+        function configurarMapa() {
+            const { lat, lng } = CONFIG.ubicacion;
+            document.getElementById('mapaFrame').src =
+                `https://maps.google.com/maps?q=${lat},${lng}&z=17&output=embed`;
+        }
+
+        function configurarGoogleMaps() {
+            const { lat, lng } = CONFIG.ubicacion;
+            document.getElementById('abrirMaps').href =
+                `https://www.google.com/maps?q=${lat},${lng}`;
+        }
+
+        function mostrarCoordenadas() {
+            const { plusCode, lat, lng } = CONFIG.ubicacion;
+            document.getElementById('coordenadasBox').innerHTML =
+                `<i class="fas fa-crosshairs me-1"></i> ${plusCode} · ${lat}, ${lng}`;
+        }
+
+        function actualizarDireccion() {
+            document.getElementById('direccionUbicacion').textContent = CONFIG.direccion;
+            document.getElementById('alcaldiaUbicacion').textContent = CONFIG.alcaldia;
+        }
+
+        // ============================================
+        // DISTANCIAS A PUNTOS DE INTERÉS
+        // ============================================
+        function mostrarDistancias() {
+            const { lat, lng } = CONFIG.ubicacion;
+            const puntos = [
+                { nombre: 'Hipódromo de las Américas', lat: 19.4333, lng: -99.2167 },
+                { nombre: 'Polanco', lat: 19.4319, lng: -99.1931 },
+                { nombre: 'Centro Citibanamex', lat: 19.4432, lng: -99.1976 }
+            ];
+            const container = document.getElementById('distanciasContainer');
+            container.innerHTML = '';
+            puntos.forEach(p => {
+                const dist = haversine(lat, lng, p.lat, p.lng);
+                const item = document.createElement('div');
+                item.className = 'distancia-item';
+                item.innerHTML = `
+                    <i class="fas fa-location-dot"></i>
+                    <span><strong>${p.nombre}</strong> a ${formatearDistancia(dist)}</span>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        // ============================================
+        // GALERÍA: HERO + MINIATURAS
+        // ============================================
+        let fotoActual = 1;
+        const totalFotos = CONFIG.galeria.totalFotos;
+
+        function generarGaleria() {
+            const contenedor = document.getElementById('galeriaMiniaturas');
+            const { carpeta, extension } = CONFIG.galeria;
+
+            for (let i = 1; i <= totalFotos; i++) {
+                const thumb = document.createElement('div');
+                thumb.className = 'thumb-item';
+                if (i === 1) thumb.classList.add('active');
+                thumb.innerHTML = `
+                    <img src="${carpeta}/${i}.${extension}" alt="Miniatura ${i}" loading="lazy" />
+                    <div class="thumb-overlay"></div>
+                `;
+
+                thumb.addEventListener('mouseenter', function() {
+                    const imgSrc = this.querySelector('img').src;
+                    document.getElementById('featuredImage').src = imgSrc;
+                    document.querySelectorAll('.thumb-item').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    fotoActual = i;
+                });
+
+                thumb.addEventListener('click', function() {
+                    const imgSrc = this.querySelector('img').src;
+                    abrirLightbox(imgSrc, i);
+                });
+
+                contenedor.appendChild(thumb);
+            }
+
+            document.getElementById('featuredWrapper').addEventListener('click', function() {
+                const src = document.getElementById('featuredImage').src;
+                const idx = obtenerIndicePorSrc(src);
+                abrirLightbox(src, idx);
+            });
+
+            document.getElementById('btnVerTodas').addEventListener('click', function() {
+                const src = document.getElementById('featuredImage').src;
+                const idx = obtenerIndicePorSrc(src);
+                abrirLightbox(src, idx);
+            });
+        }
+
+        function obtenerIndicePorSrc(src) {
+            const match = src.match(/\/(\d+)\./);
+            if (match) return parseInt(match[1]);
+            return 1;
+        }
+
+        // ============================================
+        // LIGHTBOX MEJORADO (zoom, swipe)
+        // ============================================
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightboxImg');
+        const counter = document.getElementById('lightboxCounter');
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let isZoomed = false;
+
+        function abrirLightbox(src, idx) {
+            lightboxImg.src = src;
+            lightboxImg.classList.remove('zoom');
+            isZoomed = false;
+            fotoActual = idx || obtenerIndicePorSrc(src);
+            actualizarContador();
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function cerrarLightbox(event) {
+            if (event && event.target !== event.currentTarget && !event.target.closest('.lightbox-nav') && !event
+                .target.closest('.close-lightbox') && !event.target.closest('#lightboxContent')) {
+                return;
+            }
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
+            isZoomed = false;
+            lightboxImg.classList.remove('zoom');
+        }
+
+        function navegarLightbox(direccion) {
+            let nuevo = fotoActual + direccion;
+            if (nuevo < 1) nuevo = totalFotos;
+            if (nuevo > totalFotos) nuevo = 1;
+            fotoActual = nuevo;
+            const { carpeta, extension } = CONFIG.galeria;
+            const src = `${carpeta}/${fotoActual}.${extension}`;
+            lightboxImg.src = src;
+            lightboxImg.classList.remove('zoom');
+            isZoomed = false;
+            actualizarContador();
+
+            document.getElementById('featuredImage').src = src;
+            document.querySelectorAll('.thumb-item').forEach((t, index) => {
+                t.classList.toggle('active', index === fotoActual - 1);
+            });
+        }
+
+        function actualizarContador() {
+            counter.textContent = `${fotoActual} / ${totalFotos}`;
+        }
+
+        // Zoom con clic en la imagen
+        function toggleZoom(e) {
+            e.stopPropagation();
+            isZoomed = !isZoomed;
+            lightboxImg.classList.toggle('zoom', isZoomed);
+        }
+
+        // Swipe táctil (para móviles)
+        lightbox.addEventListener('touchstart', function(e) {
+            if (e.target.closest('.lightbox-nav') || e.target.closest('.close-lightbox')) return;
+            const touch = e.touches[0];
+            touchStartX = touch.clientX;
+            touchStartY = touch.clientY;
+        }, { passive: true });
+
+        lightbox.addEventListener('touchmove', function(e) {
+            if (e.target.closest('.lightbox-nav') || e.target.closest('.close-lightbox') || isZoomed) return;
+            const touch = e.touches[0];
+            const deltaX = touch.clientX - touchStartX;
+            const deltaY = touch.clientY - touchStartY;
+            if (Math.abs(deltaX) > 50 && Math.abs(deltaX) > Math.abs(deltaY) * 1.2) {
+                e.preventDefault();
+                if (deltaX > 0) navegarLightbox(-1);
+                else navegarLightbox(1);
+                touchStartX = touch.clientX;
+                touchStartY = touch.clientY;
+            }
+        }, { passive: false });
+
+        // Teclado
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') cerrarLightbox(e);
+            if (e.key === 'ArrowLeft' && lightbox.classList.contains('active')) navegarLightbox(-1);
+            if (e.key === 'ArrowRight' && lightbox.classList.contains('active')) navegarLightbox(1);
+        });
+
+        // ============================================
+        // PARALLAX EN HERO
+        // ============================================
+        function initParallax() {
+            const heroBg = document.getElementById('heroBg');
+            let ticking = false;
+            window.addEventListener('scroll', () => {
+                if (!ticking) {
+                    window.requestAnimationFrame(() => {
+                        const scrollY = window.scrollY;
+                        const offset = scrollY * 0.1;
+                        heroBg.style.transform = `translateY(${offset}px) scale(1.1)`;
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            }, { passive: true });
+        }
+
+        // ============================================
+        // BOTÓN VOLVER ARRIBA
+        // ============================================
+        function initTopButton() {
+            const btn = document.getElementById('btnTop');
+            let lastScroll = 0;
+            window.addEventListener('scroll', () => {
+                const currentScroll = window.scrollY;
+                if (currentScroll > 300) {
+                    btn.classList.add('visible');
+                } else {
+                    btn.classList.remove('visible');
+                }
+                lastScroll = currentScroll;
+            }, { passive: true });
+
+            btn.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+
+        // ============================================
+        // ANIMACIÓN DE ENTRADA (IntersectionObserver)
+        // ============================================
+        function activarAnimacionEntrada() {
+            const cards = document.querySelectorAll('.card-modern');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+
+            cards.forEach(card => observer.observe(card));
+        }
+
+        // ============================================
+        // SCROLL SUAVE PARA ANCLAS (mejora el nativo)
+        // ============================================
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    e.preventDefault();
+                    const offsetTop = targetElement.getBoundingClientRect().top + window.pageYOffset - 70;
+                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+                }
+            });
+        });
+
+        // ============================================
+        // INICIALIZAR
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            configurarWhatsApp();
+            configurarMapa();
+            configurarGoogleMaps();
+            mostrarCoordenadas();
+            actualizarDireccion();
+            mostrarDistancias();
+            generarGaleria();
+            activarAnimacionEntrada();
+            initParallax();
+            initTopButton();
+            initCustomCursor(); // <-- inicializar cursor personalizado
+        });
+    </script>
+
+</body>
+</html>
